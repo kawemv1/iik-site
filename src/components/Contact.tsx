@@ -1,35 +1,15 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Phone, Clock, Send, MessageCircle, Instagram, Sparkles } from "lucide-react";
+import { MapPin, Phone, Clock, Instagram, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { createWhatsAppLink, whatsAppMessages, whatsAppMessagesKZ } from "@/utils/whatsapp";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 
 export const Contact = () => {
-  const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    message: "",
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Заявка отправлена!",
-      description: "Мы свяжемся с вами в течение 24 часов.",
-    });
-    setFormData({ name: "", phone: "", email: "", message: "" });
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const { t, language } = useLanguage();
 
   return (
-    <section id="contact" className="py-24 bg-background">
+    <section id="contact" className="py-12 md:py-16 lg:py-24 bg-gradient-hero">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -41,13 +21,13 @@ export const Contact = () => {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent border border-primary/20 mb-6">
             <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Контакты</span>
+            <span className="text-sm font-medium text-primary">{t("contact.badge")}</span>
           </div>
           <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
-            Начните свой путь <span className="text-gradient">сегодня</span>
+            {t("contact.title")} <span className="text-gradient">{t("contact.titleHighlight")}</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Свяжитесь с нами любым удобным способом или оставьте заявку — мы перезвоним в течение часа.
+            {t("contact.description")}
           </p>
         </motion.div>
 
@@ -63,13 +43,13 @@ export const Contact = () => {
             {/* Contact Cards */}
             <div className="space-y-4">
               {/* Address */}
-              <div className="flex items-start gap-4 p-6 bg-card rounded-2xl border border-border">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-6 h-6 text-primary" />
+              <div className="flex items-start gap-3 md:gap-4 p-4 md:p-5 lg:p-6 bg-card rounded-xl md:rounded-2xl border border-border">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-foreground mb-1">Наш адрес</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="font-heading font-bold text-sm md:text-base text-foreground mb-1">{t("contact.address")}</h3>
+                  <p className="text-sm md:text-base text-muted-foreground">
                     ул. Сыганак, 4, вход 1<br />
                     г. Астана, Казахстан
                   </p>
@@ -77,170 +57,90 @@ export const Contact = () => {
               </div>
 
               {/* Phone */}
-              <div className="flex items-start gap-4 p-6 bg-card rounded-2xl border border-border">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-6 h-6 text-primary" />
+              <div className="flex items-start gap-3 md:gap-4 p-4 md:p-5 lg:p-6 bg-card rounded-xl md:rounded-2xl border border-border">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Phone className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-foreground mb-1">Телефон</h3>
+                  <h3 className="font-heading font-bold text-sm md:text-base text-foreground mb-1">{t("contact.phone")}</h3>
                   <a
                     href="tel:+77081486845"
-                    className="text-primary font-semibold hover:underline"
+                    className="text-sm md:text-base text-primary font-semibold hover:underline"
                   >
                     +7 708 148 68 45
                   </a>
-                  <p className="text-sm text-muted-foreground mt-1">WhatsApp доступен</p>
+                  <p className="text-xs md:text-sm text-muted-foreground mt-1">{t("contact.whatsapp")}</p>
                 </div>
               </div>
 
               {/* Hours */}
-              <div className="flex items-start gap-4 p-6 bg-card rounded-2xl border border-border">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-6 h-6 text-primary" />
+              <div className="flex items-start gap-3 md:gap-4 p-4 md:p-5 lg:p-6 bg-card rounded-xl md:rounded-2xl border border-border">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Clock className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-foreground mb-1">Часы работы</h3>
-                  <p className="text-muted-foreground">
-                    Пн-Пт: 10:00 - 21:00<br />
-                    Сб: 10:00 - 18:00<br />
-                    Вс: По записи
+                  <h3 className="font-heading font-bold text-sm md:text-base text-foreground mb-1">{t("contact.hours")}</h3>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    {t("contact.hoursWeekdays")}<br />
+                    {t("contact.hoursSaturday")}<br />
+                    {t("contact.hoursSunday")}
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Social Links */}
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
               <a
-                href="https://wa.me/77081486845"
+                href={createWhatsAppLink(language === "kk" ? whatsAppMessagesKZ.contact : whatsAppMessages.contact)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 px-6 py-4 bg-[#25D366]/10 rounded-xl border border-[#25D366]/30 hover:bg-[#25D366]/20 transition-colors group"
+                className="flex items-center justify-center gap-2 md:gap-3 px-4 md:px-6 py-3 md:py-4 bg-[#25D366]/10 rounded-lg md:rounded-xl border border-[#25D366]/30 hover:bg-[#25D366]/20 transition-colors group"
               >
-                <MessageCircle className="w-6 h-6 text-[#25D366]" />
-                <span className="font-medium text-foreground">WhatsApp</span>
+                <WhatsAppIcon className="w-5 h-5 md:w-6 md:h-6 text-[#25D366]" />
+                <span className="text-sm md:text-base font-medium text-foreground">WhatsApp</span>
               </a>
               <a
                 href="https://instagram.com/investinkidskz"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 px-6 py-4 bg-[#E4405F]/10 rounded-xl border border-[#E4405F]/30 hover:bg-[#E4405F]/20 transition-colors group"
+                className="flex items-center justify-center gap-2 md:gap-3 px-4 md:px-6 py-3 md:py-4 bg-[#E4405F]/10 rounded-lg md:rounded-xl border border-[#E4405F]/30 hover:bg-[#E4405F]/20 transition-colors group"
               >
-                <Instagram className="w-6 h-6 text-[#E4405F]" />
-                <span className="font-medium text-foreground">Instagram</span>
+                <Instagram className="w-5 h-5 md:w-6 md:h-6 text-[#E4405F]" />
+                <span className="text-sm md:text-base font-medium text-foreground">Instagram</span>
               </a>
             </div>
 
-            {/* Map Placeholder */}
-            <div className="rounded-2xl overflow-hidden border border-border h-64 bg-secondary flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="w-12 h-12 text-primary mx-auto mb-3" />
-                <p className="text-muted-foreground">
-                  Интерактивная карта 2GIS
-                </p>
-                <a
-                  href="https://2gis.kz/astana/search/%D1%83%D0%BB.%20%D0%A1%D1%8B%D0%B3%D0%B0%D0%BD%D0%B0%D0%BA%2C%204"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary font-medium hover:underline mt-2 inline-block"
-                >
-                  Открыть в 2GIS →
-                </a>
-              </div>
-            </div>
+            {/* 2GIS Button */}
+            <Button
+              className="w-full bg-gradient-primary hover:opacity-90 h-12 md:h-14 text-sm md:text-base"
+              onClick={() => {
+                window.open("https://2gis.kz/astana/firm/70000001087013430?m=71.367774%2C51.130056%2F16.47", "_blank");
+              }}
+            >
+              <MapPin className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+              {t("contact.open2gis")}
+            </Button>
           </motion.div>
 
-          {/* Contact Form */}
+          {/* Google Maps */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="bg-card rounded-3xl p-8 md:p-10 border border-border shadow-card">
-              <h3 className="font-heading text-2xl font-bold text-foreground mb-2">
-                Оставьте заявку
-              </h3>
-              <p className="text-muted-foreground mb-8">
-                Заполните форму — мы свяжемся с вами в течение часа
-              </p>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
-                    Ваше имя *
-                  </label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Введите ваше имя"
-                    required
-                    className="h-12"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
-                    Телефон *
-                  </label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="+7 (___) ___-__-__"
-                    required
-                    className="h-12"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                    Email (необязательно)
-                  </label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="your@email.com"
-                    className="h-12"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
-                    Сообщение *
-                  </label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Расскажите о ваших целях изучения английского..."
-                    required
-                    rows={4}
-                    className="resize-none"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full bg-gradient-primary hover:opacity-90 h-14 text-base"
-                >
-                  <Send className="w-5 h-5 mr-2" />
-                  Отправить заявку
-                </Button>
-
-                <p className="text-xs text-center text-muted-foreground">
-                  Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
-                </p>
-              </form>
+            <div className="bg-card rounded-xl md:rounded-2xl lg:rounded-3xl p-0 border border-border shadow-card overflow-hidden">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2503.8097009390385!2d71.3670964!3d51.1304181!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4245866e23f9b5dd%3A0xabd59b3789b9634f!2z0YPQuy4g0KHRi9Cz0LDQvdCw0LogNCwg0JDRgdGC0LDQvdCwIDAyMDAwMA!5e0!3m2!1sru!2skz!4v1765628477432!5m2!1sru!2skz"
+                width="100%"
+                height="300"
+                style={{ border: 0, minHeight: '300px' }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full md:h-[400px] lg:h-[450px]"
+              />
             </div>
           </motion.div>
         </div>
