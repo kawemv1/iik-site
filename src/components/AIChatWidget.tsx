@@ -319,44 +319,167 @@ const AIChatWidget = ({ webhookUrl = "" }: AIChatWidgetProps) => {
 
   return (
     <>
-      {/* Chat Window - Centered on mobile, positioned on desktop */}
+      {/* Mobile Chat Window - Full screen overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center p-4 md:hidden">
-          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
-          <Card className="relative w-full max-w-[380px] h-[calc(100vh-3rem)] max-h-[600px] flex flex-col shadow-lg border-2 rounded-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 sm:pb-3 border-b px-3 sm:px-6 pt-3 sm:pt-6">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <Bot className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                <CardTitle className="text-base sm:text-lg">{t("chat.assistant")}</CardTitle>
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="absolute inset-0 bg-background/95 backdrop-blur-sm" />
+          <div className="relative h-full flex flex-col">
+            <Card className="h-full flex flex-col shadow-none border-0 rounded-none bg-transparent">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b px-4 pt-4 bg-background/80 backdrop-blur-sm">
+                <div className="flex items-center gap-2">
+                  <Bot className="h-5 w-5 text-primary" />
+                  <CardTitle className="text-base">{t("chat.assistant")}</CardTitle>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsOpen(false)}
+                  className="h-8 w-8"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col p-0 overflow-hidden bg-background/80 backdrop-blur-sm">
+                <ScrollArea className="flex-1 px-3 py-4" ref={scrollAreaRef}>
+                  <div className="space-y-3">
+                    {messages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={cn(
+                          "flex gap-2",
+                          message.sender === "user" ? "justify-end" : "justify-start"
+                        )}
+                      >
+                        {message.sender === "ai" && (
+                          <div className="flex-shrink-0 h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Bot className="h-4 w-4 text-primary" />
+                          </div>
+                        )}
+                        <div
+                          className={cn(
+                            "max-w-[75%] rounded-lg px-3 py-2",
+                            message.sender === "user"
+                              ? "bg-primary text-primary-foreground"
+                              : isDark 
+                                ? "bg-muted text-white" 
+                                : "bg-muted text-foreground"
+                          )}
+                        >
+                          <p 
+                            className={cn(
+                              "text-[13px] leading-relaxed whitespace-pre-wrap break-words",
+                              message.sender === "user"
+                                ? "text-primary-foreground"
+                                : isDark 
+                                  ? "text-white" 
+                                  : "text-foreground"
+                            )}
+                            dangerouslySetInnerHTML={{ 
+                              __html: parseMarkdown(message.text) 
+                            }}
+                          />
+                          <span className={cn(
+                            "text-[10px] opacity-70 mt-1 block",
+                            message.sender === "user"
+                              ? "text-primary-foreground"
+                              : isDark 
+                                ? "text-white" 
+                                : "text-foreground"
+                          )}>
+                            {message.timestamp.toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </span>
+                        </div>
+                        {message.sender === "user" && (
+                          <div className="flex-shrink-0 h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center">
+                            <User className="h-4 w-4 text-primary" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    {isLoading && (
+                      <div className="flex gap-2 justify-start">
+                        <div className="flex-shrink-0 h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Bot className="h-4 w-4 text-primary" />
+                        </div>
+                        <div className={cn(
+                          "bg-muted rounded-lg px-3 py-2",
+                          isDark ? "text-white" : "text-foreground"
+                        )}>
+                          <div className="flex gap-1">
+                            <span className="h-1.5 w-1.5 bg-current rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                            <span className="h-1.5 w-1.5 bg-current rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                            <span className="h-1.5 w-1.5 bg-current rounded-full animate-bounce"></span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div ref={messagesEndRef} />
+                  </div>
+                </ScrollArea>
+                <div className="border-t p-3 flex gap-2 bg-background">
+                  <Input
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder={t("chat.placeholder")}
+                    disabled={isLoading}
+                    className="flex-1 text-sm h-10"
+                  />
+                  <Button
+                    onClick={sendMessage}
+                    disabled={!inputValue.trim() || isLoading}
+                    size="icon"
+                    className="h-10 w-10 flex-shrink-0"
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Chat Window */}
+      {isOpen && (
+        <div className="hidden md:block fixed bottom-24 right-6 z-50">
+          <Card className="w-[400px] h-[550px] flex flex-col shadow-2xl border-2 rounded-2xl">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b px-5 pt-5">
+              <div className="flex items-center gap-2">
+                <Bot className="h-5 w-5 text-primary" />
+                <CardTitle className="text-lg">{t("chat.assistant")}</CardTitle>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsOpen(false)}
-                className="h-7 w-7 sm:h-8 sm:w-8"
+                className="h-8 w-8 hover:bg-destructive/10"
               >
-                <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <X className="h-4 w-4" />
               </Button>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
-              <ScrollArea className="flex-1 px-2.5 sm:px-4 py-3 sm:py-4" ref={scrollAreaRef}>
-                <div className="space-y-3 sm:space-y-4">
+              <ScrollArea className="flex-1 px-4 py-4" ref={scrollAreaRef}>
+                <div className="space-y-4">
                   {messages.map((message) => (
                     <div
                       key={message.id}
                       className={cn(
-                        "flex gap-2 sm:gap-3",
+                        "flex gap-3",
                         message.sender === "user" ? "justify-end" : "justify-start"
                       )}
                     >
                       {message.sender === "ai" && (
-                        <div className="flex-shrink-0 h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          <Bot className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+                        <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Bot className="h-4 w-4 text-primary" />
                         </div>
                       )}
                       <div
                         className={cn(
-                          "max-w-[85%] sm:max-w-[80%] rounded-lg px-3 sm:px-4 py-1.5 sm:py-2",
+                          "max-w-[75%] rounded-xl px-4 py-2.5",
                           message.sender === "user"
                             ? "bg-primary text-primary-foreground"
                             : isDark 
@@ -366,7 +489,7 @@ const AIChatWidget = ({ webhookUrl = "" }: AIChatWidgetProps) => {
                       >
                         <p 
                           className={cn(
-                            "text-xs sm:text-sm whitespace-pre-wrap break-words",
+                            "text-sm leading-relaxed whitespace-pre-wrap break-words",
                             message.sender === "user"
                               ? "text-primary-foreground"
                               : isDark 
@@ -378,7 +501,7 @@ const AIChatWidget = ({ webhookUrl = "" }: AIChatWidgetProps) => {
                           }}
                         />
                         <span className={cn(
-                          "text-[10px] sm:text-xs opacity-70 mt-0.5 sm:mt-1 block",
+                          "text-xs opacity-70 mt-1 block",
                           message.sender === "user"
                             ? "text-primary-foreground"
                             : isDark 
@@ -392,25 +515,25 @@ const AIChatWidget = ({ webhookUrl = "" }: AIChatWidgetProps) => {
                         </span>
                       </div>
                       {message.sender === "user" && (
-                        <div className="flex-shrink-0 h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+                        <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <User className="h-4 w-4 text-primary" />
                         </div>
                       )}
                     </div>
                   ))}
                   {isLoading && (
-                    <div className="flex gap-2 sm:gap-3 justify-start">
-                      <div className="flex-shrink-0 h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Bot className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+                    <div className="flex gap-3 justify-start">
+                      <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Bot className="h-4 w-4 text-primary" />
                       </div>
                       <div className={cn(
-                        "bg-muted rounded-lg px-3 sm:px-4 py-1.5 sm:py-2",
+                        "bg-muted rounded-xl px-4 py-2.5",
                         isDark ? "text-white" : "text-foreground"
                       )}>
                         <div className="flex gap-1">
-                          <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 bg-current rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                          <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 bg-current rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                          <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 bg-current rounded-full animate-bounce"></span>
+                          <span className="h-2 w-2 bg-current rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                          <span className="h-2 w-2 bg-current rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                          <span className="h-2 w-2 bg-current rounded-full animate-bounce"></span>
                         </div>
                       </div>
                     </div>
@@ -418,140 +541,20 @@ const AIChatWidget = ({ webhookUrl = "" }: AIChatWidgetProps) => {
                   <div ref={messagesEndRef} />
                 </div>
               </ScrollArea>
-              <div className="border-t p-2.5 sm:p-3 md:p-4 flex gap-1.5 sm:gap-2">
+              <div className="border-t p-4 flex gap-2">
                 <Input
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder={t("chat.placeholder")}
                   disabled={isLoading}
-                  className="flex-1 text-xs sm:text-sm h-9 sm:h-10"
+                  className="flex-1 text-sm h-11"
                 />
                 <Button
                   onClick={sendMessage}
                   disabled={!inputValue.trim() || isLoading}
                   size="icon"
-                  className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0"
-                >
-                  <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-      {/* Desktop Chat Window */}
-      {isOpen && (
-        <div className="hidden md:block fixed bottom-10 right-6 z-50">
-          <Card className="w-[380px] h-[500px] max-h-[600px] flex flex-col shadow-lg border-2 rounded-xl">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b px-6 pt-6">
-            <div className="flex items-center gap-2">
-              <Bot className="h-5 w-5 text-primary" />
-              <CardTitle className="text-lg">{t("chat.assistant")}</CardTitle>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(false)}
-              className="h-8 w-8"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </CardHeader>
-          <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
-            <ScrollArea className="flex-1 px-4 py-4" ref={scrollAreaRef}>
-              <div className="space-y-4">
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={cn(
-                      "flex gap-3",
-                      message.sender === "user" ? "justify-end" : "justify-start"
-                    )}
-                  >
-                    {message.sender === "ai" && (
-                      <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Bot className="h-4 w-4 text-primary" />
-                      </div>
-                    )}
-                    <div
-                      className={cn(
-                        "max-w-[80%] rounded-lg px-4 py-2",
-                        message.sender === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : isDark 
-                            ? "bg-muted text-white" 
-                            : "bg-muted text-foreground"
-                      )}
-                    >
-                      <p 
-                        className={cn(
-                          "text-sm whitespace-pre-wrap break-words",
-                          message.sender === "user"
-                            ? "text-primary-foreground"
-                            : isDark 
-                              ? "text-white" 
-                              : "text-foreground"
-                        )}
-                        dangerouslySetInnerHTML={{ 
-                          __html: parseMarkdown(message.text) 
-                        }}
-                      />
-                      <span className={cn(
-                        "text-xs opacity-70 mt-1 block",
-                        message.sender === "user"
-                          ? "text-primary-foreground"
-                          : isDark 
-                            ? "text-white" 
-                            : "text-foreground"
-                      )}>
-                        {message.timestamp.toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </div>
-                    {message.sender === "user" && (
-                      <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <User className="h-4 w-4 text-primary" />
-                      </div>
-                    )}
-                  </div>
-                ))}
-                {isLoading && (
-                  <div className="flex gap-3 justify-start">
-                    <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Bot className="h-4 w-4 text-primary" />
-                    </div>
-                    <div className={cn(
-                      "bg-muted rounded-lg px-4 py-2",
-                      isDark ? "text-white" : "text-foreground"
-                    )}>
-                      <div className="flex gap-1">
-                        <span className="h-2 w-2 bg-current rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                        <span className="h-2 w-2 bg-current rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                        <span className="h-2 w-2 bg-current rounded-full animate-bounce"></span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-            </ScrollArea>
-            <div className="border-t p-4 flex gap-2">
-              <Input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={t("chat.placeholder")}
-                disabled={isLoading}
-                  className="flex-1 text-sm h-10"
-                />
-                <Button
-                  onClick={sendMessage}
-                  disabled={!inputValue.trim() || isLoading}
-                  size="icon"
-                  className="h-10 w-10 flex-shrink-0"
+                  className="h-11 w-11 flex-shrink-0"
                 >
                   <Send className="h-4 w-4" />
                 </Button>
@@ -561,32 +564,34 @@ const AIChatWidget = ({ webhookUrl = "" }: AIChatWidgetProps) => {
         </div>
       )}
       
-      {/* Button Container */}
-      <div className="fixed bottom-6 right-3 sm:bottom-8 sm:right-4 md:bottom-10 md:right-6 z-50 flex items-end md:items-center gap-2 md:gap-3 flex-col-reverse md:flex-row">
-        {/* Text Label - shown when chat is closed */}
+      {/* Toggle Button */}
+      <div className="fixed bottom-6 right-6 z-40">
+        {/* Text Label - shown when chat is closed on desktop */}
         {!isOpen && (
-          <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg px-2 md:px-3 py-1.5 md:py-2 shadow-md animate-in fade-in slide-in-from-right-2 duration-300 flex items-center gap-1.5 md:gap-2 hidden sm:flex">
-            <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-primary animate-pulse" />
-            <p className="text-xs md:text-sm font-medium text-foreground whitespace-nowrap">
-              {t("chat.askAI")}
-            </p>
+          <div className="hidden md:block absolute bottom-full right-0 mb-3 bg-card/95 backdrop-blur-sm border border-border rounded-lg px-3 py-2 shadow-md animate-in fade-in slide-in-from-right-2 duration-300">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+              <p className="text-sm font-medium text-foreground whitespace-nowrap">
+                {t("chat.askAI")}
+              </p>
+            </div>
           </div>
         )}
 
-        {/* Toggle Button */}
+        {/* Chat Toggle Button */}
         <Button
           onClick={() => setIsOpen(!isOpen)}
           size="lg"
           className={cn(
-            "h-11 w-11 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-full shadow-lg hover:shadow-xl transition-all flex-shrink-0",
+            "h-14 w-14 rounded-full shadow-xl hover:shadow-2xl transition-all",
             isJumping && !isOpen && "animate-jump"
           )}
-          aria-label="Open AI Chat"
+          aria-label="Toggle AI Chat"
         >
           {isOpen ? (
-            <X className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+            <X className="h-6 w-6" />
           ) : (
-            <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+            <MessageCircle className="h-6 w-6" />
           )}
         </Button>
       </div>
@@ -595,4 +600,3 @@ const AIChatWidget = ({ webhookUrl = "" }: AIChatWidgetProps) => {
 };
 
 export default AIChatWidget;
-
