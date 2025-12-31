@@ -7,6 +7,15 @@ export default defineConfig(() => ({
   server: {
     host: "::",
     port: 8080,
+    allowedHosts: ['investinkids.kz', 'www.investinkids.kz', 'localhost'],
+    watch: {
+      ignored: ['**/.git/**', '**/node_modules/**']
+    }
+  },
+  preview: {
+    host: "::",
+    port: 8080,
+    allowedHosts: ['investinkids.kz', 'www.investinkids.kz', 'localhost']
   },
   plugins: [react()],
   resolve: {
