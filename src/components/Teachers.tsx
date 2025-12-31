@@ -176,7 +176,13 @@ export const Teachers = () => {
                 <img
                   src={teacher.photo || "/placeholder.svg"}
                   alt={teacher.name}
-                  className={`w-full h-full object-cover ${teacher.name === "Farimoyo Bashirah Ayomide" ? "scale-125 object-top" : ""}`}
+                  className={`w-full h-full object-cover ${
+                    teacher.name === "Farimoyo Bashirah Ayomide" 
+                      ? "scale-125 object-[50%_15%] md:object-center" 
+                      : teacher.name === "Анаргул Эсеналиева"
+                      ? "object-[50%_30%] md:object-center"
+                      : ""
+                  }`}
                   onError={(e) => {
                     // Fallback to placeholder if image doesn't exist
                     const target = e.target as HTMLImageElement;
