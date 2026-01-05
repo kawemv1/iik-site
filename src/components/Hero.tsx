@@ -149,7 +149,7 @@ export const Hero = () => {
                   size="lg"
                   className="w-full bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-500 transition-all text-[14px] px-6 h-12 border-2 border-amber-400/60 hover:border-amber-300 hover:shadow-[0_0_30px_hsl(38_92%_50%/0.6)] relative overflow-hidden group shadow-lg"
                 >
-                  <span className="relative z-10 flex items-center text-white font-bold mx-auto lg:mx-0">
+                  <span className="relative z-10 flex items-center text-white font-bold mx-auto">
                     {t("hero.testButton")}
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </span>
