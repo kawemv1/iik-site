@@ -48,15 +48,15 @@ export const Hero = () => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-center justify-items-center lg:justify-items-start">
           {/* Left Content */}
-          <div className="flex flex-col items-center lg:items-start space-y-4 md:space-y-6 lg:space-y-8 text-center lg:text-left">
+          <div className="flex flex-col items-center lg:items-start space-y-4 md:space-y-6 lg:space-y-8 text-center lg:text-left w-full max-w-xl">
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex justify-center lg:justify-start"
+              className="flex justify-center lg:justify-start w-full"
             >
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent border border-primary/20">
                 <Sparkles className="w-3.5 h-3.5 text-primary" />
@@ -71,7 +71,7 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-heading text-[28px] leading-[1.2] xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground w-full"
+              className="font-heading text-[28px] leading-[1.2] xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground w-full text-center lg:text-left"
             >
               {t("hero.title")}{" "}
               <span className="text-gradient">{t("hero.titleHighlight")}</span>
@@ -82,7 +82,7 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-[15px] leading-[1.5] sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0"
+              className="text-[15px] leading-[1.5] sm:text-base md:text-lg lg:text-xl text-muted-foreground w-full text-center lg:text-left"
             >
               {t("hero.description")}
             </motion.p>
@@ -92,12 +92,12 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="grid grid-cols-2 gap-2 max-w-sm mx-auto lg:max-w-none lg:mx-0"
+              className="grid grid-cols-2 gap-2 w-full max-w-sm"
             >
               {benefits.map((benefit) => (
                 <div
                   key={benefit}
-                  className="flex items-center gap-1.5 text-[13px] text-foreground"
+                  className="flex items-center justify-center lg:justify-start gap-1.5 text-[13px] text-foreground"
                 >
                   <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
                   <span className="whitespace-nowrap">{benefit}</span>
@@ -110,7 +110,7 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-col gap-2.5 w-full max-w-sm mx-auto lg:max-w-none lg:mx-0 sm:flex-row"
+              className="flex flex-col gap-2.5 w-full max-w-sm sm:flex-row items-center justify-center lg:justify-start"
             >
               <Button
                 size="lg"
@@ -142,14 +142,14 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="w-full max-w-sm mx-auto lg:max-w-none lg:mx-0"
+              className="w-full max-w-sm"
             >
               <Link to="/test">
                 <Button
                   size="lg"
                   className="w-full bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-500 transition-all text-[14px] px-6 h-12 border-2 border-amber-400/60 hover:border-amber-300 hover:shadow-[0_0_30px_hsl(38_92%_50%/0.6)] relative overflow-hidden group shadow-lg"
                 >
-                  <span className="relative z-10 flex items-center text-white font-bold mx-auto">
+                  <span className="relative z-10 flex items-center text-white font-bold justify-center w-full">
                     {t("hero.testButton")}
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </span>
@@ -163,7 +163,7 @@ export const Hero = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.5 }}
-              className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-destructive/10 border border-destructive/20 w-full max-w-sm mx-auto lg:max-w-none lg:mx-0"
+              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-destructive/10 border border-destructive/20 w-full max-w-sm"
             >
               <div className="flex items-center justify-center w-9 h-9 rounded-full bg-destructive text-destructive-foreground font-bold text-xs animate-pulse flex-shrink-0">
                 FREE
@@ -184,10 +184,10 @@ export const Hero = () => {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative mt-8 lg:mt-0"
+            className="relative mt-8 lg:mt-0 w-full max-w-sm"
           >
             {/* Main Card */}
-            <div className="relative max-w-sm mx-auto lg:max-w-none">
+            <div className="relative">
               <div className="absolute inset-0 bg-gradient-primary rounded-2xl blur-3xl opacity-20 transform rotate-6 hidden md:block" />
               <div className="relative bg-gradient-card rounded-2xl p-4 md:p-6 lg:p-8 border border-border shadow-card">
                 {/* Stats - iPhone 13 optimized grid */}
