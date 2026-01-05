@@ -50,7 +50,7 @@ export const Hero = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-center">
           {/* Left Content */}
-          <div className="space-y-4 md:space-y-6 lg:space-y-8">
+          <div className="flex flex-col items-center lg:items-start space-y-4 md:space-y-6 lg:space-y-8 text-center lg:text-left">
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -71,7 +71,7 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-heading text-[28px] leading-[1.2] xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground text-center lg:text-left"
+              className="font-heading text-[28px] leading-[1.2] xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground w-full"
             >
               {t("hero.title")}{" "}
               <span className="text-gradient">{t("hero.titleHighlight")}</span>
@@ -82,7 +82,7 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-[15px] leading-[1.5] sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl text-center lg:text-left mx-auto lg:mx-0"
+              className="text-[15px] leading-[1.5] sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0"
             >
               {t("hero.description")}
             </motion.p>
@@ -110,7 +110,7 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-col gap-2.5 max-w-sm mx-auto lg:max-w-none lg:mx-0 sm:flex-row"
+              className="flex flex-col gap-2.5 w-full max-w-sm mx-auto lg:max-w-none lg:mx-0 sm:flex-row"
             >
               <Button
                 size="lg"
@@ -142,14 +142,14 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="max-w-sm mx-auto lg:max-w-none lg:mx-0"
+              className="w-full max-w-sm mx-auto lg:max-w-none lg:mx-0"
             >
               <Link to="/test">
                 <Button
                   size="lg"
                   className="w-full bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-500 transition-all text-[14px] px-6 h-12 border-2 border-amber-400/60 hover:border-amber-300 hover:shadow-[0_0_30px_hsl(38_92%_50%/0.6)] relative overflow-hidden group shadow-lg"
                 >
-                  <span className="relative z-10 flex items-center text-white font-bold">
+                  <span className="relative z-10 flex items-center text-white font-bold mx-auto lg:mx-0">
                     {t("hero.testButton")}
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </span>
@@ -168,7 +168,7 @@ export const Hero = () => {
               <div className="flex items-center justify-center w-9 h-9 rounded-full bg-destructive text-destructive-foreground font-bold text-xs animate-pulse flex-shrink-0">
                 FREE
               </div>
-              <div className="flex-1">
+              <div className="flex-1 text-left">
                 <p className="font-heading font-bold text-destructive text-[13px] leading-tight">
                   {t("hero.freeTrial")}
                 </p>
